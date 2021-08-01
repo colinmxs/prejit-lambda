@@ -18,6 +18,9 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet publish --no-restore --configuration Release
+      - name: Zip
+        run: |
+          Compress-Archive PrejittedLambda/bin/Release/netcoreapp3.1/publish PrejittedLambda
       - name: Test with the dotnet CLI
         run: dotnet test
       - name: Install cdk
