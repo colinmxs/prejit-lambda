@@ -21,6 +21,8 @@ jobs:
       - name: Zip
         run: |
           Compress-Archive PrejittedLambda/bin/Release/netcoreapp3.1/publish PrejittedLambda
+          cd PrejittedLambda\
+          dir
       - name: Test with the dotnet CLI
         run: dotnet test
       - name: Install cdk
