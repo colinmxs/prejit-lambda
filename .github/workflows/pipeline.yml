@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
       - name: Build
-        run: dotnet build
+        run: dotnet publish --no-restore --configuration Release
       - name: Test with the dotnet CLI
         run: dotnet test
       - name: Install cdk
@@ -25,5 +25,5 @@ jobs:
           npm install -g aws-cdk
       - name: Deploy
         run: |
-          cd /home/runner/work/prejit-lambda/prejit-lambda/PrejittedLambda.Infrastructure/bin/Debug/netcoreapp3.1/ 
+          cd /home/runner/work/prejit-lambda/prejit-lambda/PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1/ 
           cdk deploy "*" --require-approval never
