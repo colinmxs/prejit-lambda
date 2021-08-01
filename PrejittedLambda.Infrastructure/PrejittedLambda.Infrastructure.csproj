@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+    <PropertyGroup>
+        <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+        <Deterministic>False</Deterministic>
+    </PropertyGroup>
+    <ItemGroup>
+      <None Remove="appsettings.json" />
+      <None Remove="cdk.context.json" />
+      <None Remove="cdk.json" />
+      <None Remove="tags.json" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="cdk.context.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="cdk.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="tags.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>       
+
+    <ItemGroup>
+        <!-- CDK Construct Library dependencies -->
+        <PackageReference Include="Amazon.CDK" Version="1.111.0" />
+        <PackageReference Include="Amazon.CDK.AWS.IAM" Version="1.111.0" />
+        <PackageReference Include="Amazon.CDK.AWS.Lambda" Version="1.111.0" />
+        <PackageReference Include="Amazon.CDK.AWS.APIGateway" Version="1.111.0" />
+        <PackageReference Include="Amazon.CDK.AWS.Events.Targets" Version="1.111.0" />
+        <!-- jsii Roslyn analyzers (un-comment to obtain compile-time checks for missing required props
+        <PackageReference Include="Amazon.Jsii.Analyzers" Version="*" PrivateAssets="all" /> -->
+    </ItemGroup>
+</Project>

@@ -1,0 +1,12 @@
+﻿{
+  "Environment": "#{Environment}#",
+  "Version": "#{Version}#",
+  "Department": "#{Department}#",
+  "FundingSource": "#{FundingSource}#",
+  "Project": "#{Project}#",
+  "Owner": "webdev-group@boisestate.edu",
+  "Team": "OIT Web Team",    
+  "Compliance": "FERPA",
+  "Confidentiality": "private",
+  "ApplicationId": "PrejittedLambda"
+}
