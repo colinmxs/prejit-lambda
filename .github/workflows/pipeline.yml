@@ -25,5 +25,5 @@ jobs:
           npm install -g aws-cdk
       - name: Deploy
         run: |
-          cd /home/runner/work/prejit-lambda/prejit-lambda/PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1/           
-          cdk deploy "*" --require-approval never
+          dir
+          
