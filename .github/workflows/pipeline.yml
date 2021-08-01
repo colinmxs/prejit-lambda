@@ -19,6 +19,7 @@ jobs:
       - name: Build
         run: dotnet build      
   test:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
