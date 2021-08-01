@@ -16,8 +16,8 @@
                 LambdaFunctionHandler = "PrejittedLambda::PrejittedLambda.LambdaEntryPoint::FunctionHandlerAsync",
                 LambdaFunctionName = "PrejittedLambdaFunction",
                 LambdFunctionAssetCodePath = $"{Utilities.GetDirectory("PrejittedLambda")}\\publish.zip",
-                RestApiName = $"PrejittedLambda-{props.Tags["Environment"]}",
-                AspNetEnvironment = props.Tags["Environment"],
+                RestApiName = $"PrejittedLambda",
+                AspNetEnvironment = "Production",
                 CorsOptions = new CorsOptions
                 {
                     AllowCredentials = true,

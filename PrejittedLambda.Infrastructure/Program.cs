@@ -7,7 +7,7 @@
         public static void Main(string[] args)
         {
             var app = new App();
-            _ = new MainStack(app, $"{"PrejittedLambda".Replace('.', '-')}", new StackProps());
+            _ = new MainStack(app, "PrejittedLambda", new StackProps());
             app.Synth();
         }        
     }
