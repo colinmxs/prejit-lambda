@@ -1,5 +1,4 @@
-﻿using BoiseState.Tools.Common;
-using MediatR;
+﻿using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +30,7 @@ namespace PrejittedLambda.Features.HealthCheck
             {
                 return new Result
                 {
-                    CurrentTime = MountainDateTime.Now,
+                    CurrentTime = DateTime.Now,
                     Status = await RunHealthCheck(() =>
                     {
                         return Task.CompletedTask;
