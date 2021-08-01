@@ -20,8 +20,8 @@ jobs:
         run: dotnet publish --no-restore --configuration Release
       - name: Zip
         run: |
-          Compress-Archive -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda
-          cd PrejittedLambda\
+          Compress-Archive -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/publish.zip
+          cd PrejittedLambda
           dir
       - name: Test with the dotnet CLI
         run: dotnet test
