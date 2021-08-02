@@ -63,6 +63,7 @@
         /// </summary>
         public int ProvisionedProductionInstances { get; set; } = 0;    
         public Bucket LayerBucket { get; set; }
+        public string LayerKey { get; set; }
     }
 
     public class ApiGatewayProxyLambda : Construct
@@ -121,7 +122,7 @@
                 {
                     new LayerVersion(this, "LambdaLayer", new LayerVersionProps
                     {
-                        Code = Code.FromBucket(props.LayerBucket, "PrejittedLambdaDependencies")
+                        Code = Code.FromBucket(props.LayerBucket, props.LayerKey)
                     })
                 },
                 MemorySize = 256,

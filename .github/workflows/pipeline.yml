@@ -3,7 +3,7 @@ on:
   push:
     branches: [ build ]
   workflow_dispatch:
-
+  
 jobs:
   pipeline:
     runs-on: windows-latest
@@ -25,7 +25,9 @@ jobs:
       - name: Install cdk
         run: |
           npm install -g aws-cdk
-          npm install -g aws-cli          
+          npm install -g aws-cli   
+          dotnet tool install -g Amazon.Lambda.Tools      
+          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/us-west-2
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -35,16 +37,19 @@ jobs:
       - name: Deploy Dependencies Bucket
         run: |
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/us-west-2
+          
           cdk deploy Dependencies --require-approval never
       - name: Deploy Lambda Layer
         run: |
-          dotnet tool install -g Amazon.Lambda.Tools
           cd PrejittedLambda.Dependencies
           dotnet lambda publish-layer PrejittedLambdaDependencies --layer-type runtime-package-store --s3-bucket prejittedlambdadependencies290387498273498 --framework netcoreapp3.1
+          $layer = (aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion
+          $key = ($layer.Description | convertfrom-json).Key
+          echo "LAYER_KEY=$key" >> $GITHUB_ENV
+      - name: Find and Replace
+        run: find appsettings.json -type f -exec sed -i ''s/#{LayerKey}#/${{ env.LAYER_KEY }}/g'' {} \;
       - name: Deploy
         run: |
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/us-west-2
           cdk deploy MainStack --require-approval never
           
