@@ -37,6 +37,10 @@ jobs:
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
           cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/us-west-2
           cdk deploy Dependencies --require-approval never
+      - name: Deploy Lambda Layer
+        run: |
+          dotnet tool install -g Amazon.Lambda.Tools
+          dotnet lambda publish-layer PrejittedLambda.Dependencies --layer-type runtime-package-store --s3-bucket prejittedlambdadependencies290387498273498 --framework netcoreapp3.1
       - name: Deploy
         run: |
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
