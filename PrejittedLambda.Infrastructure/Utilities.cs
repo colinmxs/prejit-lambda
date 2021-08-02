@@ -2,27 +2,10 @@
 {
     using Newtonsoft.Json;
     using System;
-    using System.Collections.Generic;
     using System.IO;
 
     public class Utilities
     {
-        /// <summary>
-        /// Uses Newtonsoft to deserialize json file into Dictionary<string, string>
-        /// </summary>
-        public static Dictionary<string, string> LoadSettingsFromJsonFile(string fileName)
-        {
-            Dictionary<string, string> pairs;
-            using (StreamReader reader = new StreamReader(fileName))
-            {
-                string json = reader.ReadToEnd();
-                pairs = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-            }
-
-            return pairs;
-        }
-
-
         public static string GetDirectory(string directoryName)
         {
             var projectRelativePath = @"";

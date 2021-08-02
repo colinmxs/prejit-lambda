@@ -28,7 +28,7 @@ jobs:
       - name: Install cdk
         run: |
           npm install -g aws-cdk
-          npm install -g aws-cli
+          npm install -g aws-cli          
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -38,5 +38,6 @@ jobs:
       - name: Deploy
         run: |
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
+          cdk bootstrap aws://685696558467/us-west-2"
           cdk deploy "*" --require-approval never
           
