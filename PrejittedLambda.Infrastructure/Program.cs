@@ -16,7 +16,7 @@
                 }
             });
 
-            _ = new MainStack(app, "PrejittedLambda", new MainStack.MainStackProps 
+            _ = new MainStack(app, "MainStack", new MainStack.MainStackProps 
             {
                 LayerBucket = dependenciesStack.Bucket,
                 Env = new Environment
