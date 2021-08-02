@@ -35,6 +35,6 @@ jobs:
       - name: Deploy
         run: |
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
-          cdk bootstrap aws://685696558467/us-west-2
+          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/us-west-2
           cdk deploy * --require-approval never
           
