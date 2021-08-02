@@ -46,7 +46,9 @@ jobs:
           $key = ($layer.Description | convertfrom-json).Key
           echo "LAYER_KEY=$key" >> $GITHUB_ENV
       - name: Find and Replace
-        run: find *.json -type f -exec sed -i ''s/#{LayerKey}#/${{ env.LAYER_KEY }}/g'' {} \;
+        run: |
+          cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
+          find *.json -type f -exec sed -i ''s/#{LayerKey}#/${{ env.LAYER_KEY }}/g'' {} \;
       - name: Deploy
         run: |
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
