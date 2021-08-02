@@ -19,10 +19,7 @@ jobs:
       - name: Build
         run: dotnet publish --no-restore --configuration Release
       - name: Zip
-        run: |
-          Compress-Archive -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/publish.zip
-          cd PrejittedLambda
-          dir
+        run: Compress-Archive -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/publish.zip
       - name: Test with the dotnet CLI
         run: dotnet test
       - name: Install cdk
@@ -38,6 +35,6 @@ jobs:
       - name: Deploy
         run: |
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
-          cdk bootstrap aws://685696558467/us-west-2"
+          cdk bootstrap aws://685696558467/us-west-2
           cdk deploy * --require-approval never
           
