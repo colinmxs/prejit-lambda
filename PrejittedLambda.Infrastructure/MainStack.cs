@@ -28,6 +28,11 @@
             };
 
             var apiGatewayProxyLambda = new ApiGatewayProxyLambda(this, apiGatewayProxyLambdaProps.ConstructIdPrefix, apiGatewayProxyLambdaProps);
+
+            //var dependenciesBucket = new Bucket(this, "PrejittedLambda.DependenciesBucket", new BucketProps 
+            //{
+                
+            //});
         }
     }
 }
