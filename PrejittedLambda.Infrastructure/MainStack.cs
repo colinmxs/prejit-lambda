@@ -2,11 +2,17 @@
 {
     using Amazon.CDK;
     using Amazon.CDK.AWS.APIGateway;
+    using Amazon.CDK.AWS.S3;
     using PrejittedLambda.Infrastructure.Constructs;
 
     public class MainStack : Stack
     {
-        public MainStack(Construct scope, string id, IStackProps props) : base(scope, id, props)
+        public class MainStackProps : StackProps
+        {
+            public Bucket LayerBucket { get; set; }
+        }
+
+        public MainStack(Construct scope, string id, MainStackProps props) : base(scope, id, props)
         {
             var apiGatewayProxyLambdaProps = new ApiGatewayProxyLambdaProps
             {
@@ -24,7 +30,8 @@
                     /// TODO: #2 Set up CORS!
                     AllowOrigins = new string[] { "" },
                     AllowMethods = Cors.ALL_METHODS
-                }
+                },
+                LayerBucket = props.LayerBucket
             };
 
             var apiGatewayProxyLambda = new ApiGatewayProxyLambda(this, apiGatewayProxyLambdaProps.ConstructIdPrefix, apiGatewayProxyLambdaProps);

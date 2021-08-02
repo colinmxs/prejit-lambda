@@ -7,6 +7,6 @@
     <IsPackable>true</IsPackable>    
   </PropertyGroup>      
   <ItemGroup>
-    <ProjectReference Include="..\PrejittedLambda.Dependencies\PrejittedLambda.Dependencies.csproj" />
+    <ProjectReference Include="..\PrejittedLambda.Dependencies\PrejittedLambdaDependencies.csproj" />
   </ItemGroup>
 </Project>

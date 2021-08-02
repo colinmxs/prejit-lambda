@@ -11,18 +11,20 @@
             {
                 Env = new Environment
                 {
-                    Account = "685696558467",
+                    Account = app.Account,
                     Region = "us-west-2"
                 }
             });
 
-            _ = new MainStack(app, "PrejittedLambda", new StackProps 
+            _ = new MainStack(app, "PrejittedLambda", new MainStack.MainStackProps 
             {
+                LayerBucket = dependenciesStack.Bucket,
                 Env = new Environment
                 {
-                    Account = "685696558467",
+                    Account = app.Account,
                     Region = "us-west-2"
-                }
+                },
+                
             });
             app.Synth();
         }        
