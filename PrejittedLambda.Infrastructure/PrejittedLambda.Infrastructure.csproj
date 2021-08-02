@@ -8,22 +8,14 @@
         <Deterministic>False</Deterministic>
     </PropertyGroup>
     <ItemGroup>
-      <None Remove="appsettings.json" />
       <None Remove="cdk.context.json" />
       <None Remove="cdk.json" />
-      <None Remove="tags.json" />
     </ItemGroup>
     <ItemGroup>
-      <Content Include="appsettings.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
       <Content Include="cdk.context.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
       <Content Include="cdk.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="tags.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>       

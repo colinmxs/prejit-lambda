@@ -2,11 +2,8 @@
 {
     using Amazon.CDK;
     using Amazon.CDK.AWS.APIGateway;
-    using Amazon.CDK.AWS.CertificateManager;
     using Amazon.CDK.AWS.IAM;
     using Amazon.CDK.AWS.Lambda;
-    using Amazon.CDK.AWS.Route53;
-    using Amazon.CDK.AWS.Route53.Targets;
     using System.Collections.Generic;
 
     public class ApiGatewayProxyLambdaProps
@@ -63,27 +60,7 @@
         /// <summary>
         /// The number of provisioned (warm) lambda instances in the production environment
         /// </summary>
-        public int ProvisionedProductionInstances { get; set; } = 0;
-        /// <summary>
-        /// The AWS account number which contains the SSL certificate
-        /// </summary>
-        public string AccountNumber { get; set; }
-        /// <summary>
-        /// The SSL Certificate ID
-        /// </summary>
-        public string SSLCertId { get; set; }
-        /// <summary>
-        /// The subdomain to use for the application
-        /// ie: https://{SubDomain}.{Domain}
-        /// eg: https://template.boisestate.edu
-        /// </summary>
-        public string SubDomain { get; set; }
-        /// <summary>
-        /// The domain name that the subdomain will be created under
-        /// ie: https://{SubDomain}.{Domain}
-        /// eg: https://template.boisestate.edu
-        /// </summary>
-        public string Domain { get; set; }        
+        public int ProvisionedProductionInstances { get; set; } = 0;    
     }
 
     public class ApiGatewayProxyLambda : Construct
@@ -166,34 +143,10 @@
                     {
                         EndpointType.REGIONAL
                     }
-                },
-                DomainName = !string.IsNullOrEmpty(props.SubDomain) ? new DomainNameOptions
-                {
-                    Certificate = Certificate.FromCertificateArn(this, "uswest2privatecert", $"arn:aws:acm:us-west-2:{props.AccountNumber}:certificate/{props.SSLCertId}"),
-                    DomainName = $"{props.SubDomain}.{props.Domain}",
-                    EndpointType = EndpointType.REGIONAL,
-                    SecurityPolicy = SecurityPolicy.TLS_1_2
-                } : null
+                }
             });
             Tags.Of(RestApi).Add("Name", props.RestApiName);
             Tags.Of(RestApi).Add("ApplicationRole", "API Gateway");
-
-            if (RestApi.DomainName != null)
-            {
-                var route53 = new RecordSet(this, "customdomain", new RecordSetProps
-                {
-                    RecordName = $"{props.SubDomain}.{props.Domain}",
-                    RecordType = RecordType.A,
-                    Zone = HostedZone.FromLookup(this, "webdevhostedzone", new HostedZoneProviderProps
-                    {
-                        DomainName = props.Domain
-                    }),
-                    Target = RecordTarget.FromAlias(new ApiGateway(RestApi))
-                });
-
-                Tags.Of(route53).Add("Name", $"{props.SubDomain}.{props.Domain}");
-                Tags.Of(route53).Add("ApplicationRole", "A Record");
-            }
         }
     }
 }
