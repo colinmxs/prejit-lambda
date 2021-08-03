@@ -47,7 +47,7 @@ jobs:
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1/publish
           $layer = (aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion
           $key = ($layer.Description | convertfrom-json).Key
-          (Get-Content -path appsettings.json -Raw) -replace ''#{LayerKey}#',$key
+          (Get-Content -path appsettings.json -Raw) -replace '#{LayerKey}#',$key
       - name: Deploy
         run: |
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
