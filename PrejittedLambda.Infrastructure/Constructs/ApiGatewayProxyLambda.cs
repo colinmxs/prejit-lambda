@@ -63,7 +63,7 @@
         /// </summary>
         public int ProvisionedProductionInstances { get; set; } = 0;
         public string LayerArn { get; set; }
-        public string LamdaFunctionLayerCodePath { get; set; }
+        public string StorePath { get; set; }
     }
 
     public class ApiGatewayProxyLambda : Construct
@@ -127,7 +127,8 @@
                 Role = LambdaExecutionRole,
                 Environment = new Dictionary<string, string>
                 {
-                    {"ASPNETCORE_ENVIRONMENT", props.AspNetEnvironment}
+                    { "ASPNETCORE_ENVIRONMENT", props.AspNetEnvironment },
+                    { "DOTNET_SHARED_STORE", props.StorePath }
                 }
             });
             Tags.Of(LambdaFunction).Add("Name", props.LambdaFunctionName);

@@ -2,7 +2,6 @@
 {
     using Amazon.CDK;
     using Amazon.CDK.AWS.APIGateway;
-    using Amazon.CDK.AWS.S3;
     using PrejittedLambda.Infrastructure.Constructs;
 
     public class MainStack : Stack
@@ -10,6 +9,7 @@
         public class MainStackProps : StackProps
         {
             public string LayerArn { get; internal set; }
+            public string StorePath { get; internal set; }
         }
 
         public MainStack(Construct scope, string id, MainStackProps props) : base(scope, id, props)
@@ -22,7 +22,7 @@
                 LambdaFunctionHandler = "PrejittedLambda::PrejittedLambda.LambdaEntryPoint::FunctionHandlerAsync",
                 LambdaFunctionName = "PrejittedLambdaFunction",
                 LambdFunctionAssetCodePath = $"{Utilities.GetDirectory("PrejittedLambda")}\\publish.zip",
-                LamdaFunctionLayerCodePath = $"{Utilities.GetDirectory("PrejittedLambda")}\\dependencies.zip",
+                StorePath = props.StorePath,
                 RestApiName = $"PrejittedLambda",
                 AspNetEnvironment = "Production",
                 CorsOptions = new CorsOptions
