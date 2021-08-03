@@ -14,10 +14,20 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '3.x'
-      - name: Build
+      - name: Build CDK
         run: |
-          dotnet store --manifest PrejittedLambda.Dependencies/PrejittedLambdaDependencies.csproj --framework netcoreapp3.1 --runtime ubuntu.20.04-x64
-          #dotnet publish --manifest PrejittedLambda.Dependencies/PrejittedLambdaDependencies.csproj --no-restore --configuration Release  
+          dotnet publish PrejittedLambda.Infrastructure/PrejittedLambda.Infrastructure.csproj --configuration Release          
+      - name: Build Dependencies
+        run: |
+          dotnet publish PrejittedLambda.Dependencies/PrejittedLambdaDependencies.csproj --configuration Release            
+      - name: Deploy Dependencies Bucket
+        run: |
+          cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1          
+          cdk deploy Dependencies --require-approval never
+      - name: Deploy Lambda Layer
+        run: |
+          cd PrejittedLambda.Dependencies
+          dotnet lambda publish-layer PrejittedLambdaDependencies --layer-type runtime-package-store --s3-bucket prejittedlambdadependencies290387498273498 --framework netcoreapp3.1           
       #- name: Zip
       #  run: |
       #    Compress-Archive -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/publish.zip    
@@ -36,14 +46,7 @@ jobs:
       #    npm install -g aws-cli   
       #    dotnet tool install -g Amazon.Lambda.Tools      
       #    cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/us-west-2      
-      ##- name: Deploy Dependencies Bucket
-      ##  run: |
-      ##    cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1          
-      ##    cdk deploy Dependencies --require-approval never
-      ##- name: Deploy Lambda Layer
-      ##  run: |
-      ##    cd PrejittedLambda.Dependencies
-      ##    dotnet lambda publish-layer PrejittedLambdaDependencies --layer-type runtime-package-store --s3-bucket prejittedlambdadependencies290387498273498 --framework netcoreapp3.1          
+
       ##- name: Replace tokens
       ##  run: |
       ##    cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
