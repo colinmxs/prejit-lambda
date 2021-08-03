@@ -18,16 +18,16 @@
                 }
             });
 
-            //_ = new MainStack(app, "MainStack", new MainStack.MainStackProps 
-            //{
-            //    LayerArn = layerArn,
-            //    Env = new Environment
-            //    {
-            //        Account = app.Account,
-            //        Region = "us-west-2"
-            //    },
-                
-            //});
+            _ = new MainStack(app, "MainStack", new MainStack.MainStackProps
+            {
+                LayerArn = layerArn,
+                Env = new Environment
+                {
+                    Account = app.Account,
+                    Region = "us-west-2"
+                },
+
+            });
             app.Synth();
         }        
     }
