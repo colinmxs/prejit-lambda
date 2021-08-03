@@ -40,6 +40,16 @@ jobs:
         run: |
           cd PrejittedLambda.Dependencies
           dotnet lambda publish-layer PrejittedLambdaDependencies --layer-type runtime-package-store --s3-bucket prejittedlambdadependencies290387498273498 --framework netcoreapp3.1           
+      - name: download Layer manifest
+        run: |          
+          $description = ((aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion.Description) | out-string | convertfrom-json
+          $bucket = $description.Buc
+          $key = $description.Key
+          aws s3 cp s3://$bucket/$key artifact.xml
+      - name: Build Main
+        run: |
+          dotnet publish PrejittedLambda/PrejittedLambda.csproj --configuration Release --manifest artifact.xml
+
       #- name: Zip
       #  run: |
       #    Compress-Archive -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/publish.zip    
