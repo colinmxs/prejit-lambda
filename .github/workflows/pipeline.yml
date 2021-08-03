@@ -14,6 +14,18 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '3.x'
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+      - name: Install cdk
+        run: |
+          npm install -g aws-cdk
+          npm install -g aws-cli   
+          dotnet tool install -g Amazon.Lambda.Tools      
+          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/us-west-2
       - name: Build CDK
         run: |
           dotnet publish PrejittedLambda.Infrastructure/PrejittedLambda.Infrastructure.csproj --configuration Release          
@@ -34,18 +46,7 @@ jobs:
       #    Compress-Archive -Path PrejittedLambda.Dependencies/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/dependencies.zip    
       #- name: Test with the dotnet CLI
       #  run: dotnet test
-      #- name: Configure AWS Credentials
-      #  uses: aws-actions/configure-aws-credentials@v1
-      #  with:
-      #    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #    aws-region: us-west-2
-      #- name: Install cdk
-      #  run: |
-      #    npm install -g aws-cdk
-      #    npm install -g aws-cli   
-      #    dotnet tool install -g Amazon.Lambda.Tools      
-      #    cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/us-west-2      
+            
 
       ##- name: Replace tokens
       ##  run: |
