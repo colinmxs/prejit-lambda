@@ -118,16 +118,9 @@
                 {
                     ProvisionedConcurrentExecutions = props.AspNetEnvironment == "Production" ? props.ProvisionedProductionInstances : 0
                 },
-                //Layers = new ILayerVersion[] 
-                //{
-                //    LayerVersion.FromLayerVersionArn(this, "Layer", props.LayerArn)
-                //},
-                Layers = new ILayerVersion[] 
+                Layers = new ILayerVersion[]
                 {
-                    new LayerVersion(this, "LambdaLayerVersion", new LayerVersionProps
-                    {
-                        Code = new AssetCode(props.LamdaFunctionLayerCodePath) 
-                    })  
+                    LayerVersion.FromLayerVersionArn(this, "Layer", props.LayerArn)
                 },
                 MemorySize = 256,
                 RetryAttempts = 1,
