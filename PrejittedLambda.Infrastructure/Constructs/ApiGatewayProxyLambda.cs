@@ -61,9 +61,8 @@
         /// <summary>
         /// The number of provisioned (warm) lambda instances in the production environment
         /// </summary>
-        public int ProvisionedProductionInstances { get; set; } = 0;    
-        public Bucket LayerBucket { get; set; }
-        public string LayerKey { get; set; }
+        public int ProvisionedProductionInstances { get; set; } = 0;
+        public string LayerArn { get; set; }
     }
 
     public class ApiGatewayProxyLambda : Construct
@@ -118,12 +117,9 @@
                 {
                     ProvisionedConcurrentExecutions = props.AspNetEnvironment == "Production" ? props.ProvisionedProductionInstances : 0
                 },
-                Layers = new LayerVersion[] 
+                Layers = new ILayerVersion[] 
                 {
-                    new LayerVersion(this, "LambdaLayer", new LayerVersionProps
-                    {
-                        Code = Code.FromBucket(props.LayerBucket, props.LayerKey)
-                    })
+                    LayerVersion.FromLayerVersionArn(this, "Layer", props.LayerArn)
                 },
                 MemorySize = 256,
                 RetryAttempts = 1,

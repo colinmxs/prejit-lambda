@@ -9,8 +9,7 @@
     {
         public class MainStackProps : StackProps
         {
-            public Bucket LayerBucket { get; set; }
-            public string LayerKey { get; internal set; }
+            public string LayerArn { get; internal set; }
         }
 
         public MainStack(Construct scope, string id, MainStackProps props) : base(scope, id, props)
@@ -32,8 +31,7 @@
                     AllowOrigins = new string[] { "" },
                     AllowMethods = Cors.ALL_METHODS
                 },
-                LayerBucket = props.LayerBucket,
-                LayerKey = props.LayerKey
+                LayerArn = props.LayerArn
             };
 
             var apiGatewayProxyLambda = new ApiGatewayProxyLambda(this, apiGatewayProxyLambdaProps.ConstructIdPrefix, apiGatewayProxyLambdaProps);
