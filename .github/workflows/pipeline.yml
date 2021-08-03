@@ -51,8 +51,8 @@ jobs:
           dotnet publish PrejittedLambda/PrejittedLambda.csproj --configuration Release --manifest artifact.xml
       - name: Zip Main
         run: |
-          dir PrejittedLambda/bin/Release/netcoreapp3.1/publish
-          Compress-Archive -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/publish.zip     
+          Get-ChildItem -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish |
+            Compress-Archive -DestinationPath PrejittedLambda/publish.zip     
       - name: Replace tokens
         run: |
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
