@@ -1,7 +1,7 @@
 name: Build/Deploy
 on:
   push:
-    branches: [ build ]
+    branches: [ main ]
   workflow_dispatch:
   
 jobs:
@@ -36,10 +36,10 @@ jobs:
       #  run: |
       #    cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1          
       #    cdk deploy Dependencies --require-approval never
-      - name: Deploy Lambda Layer
-        run: |
-          cd PrejittedLambda.Dependencies
-          dotnet lambda publish-layer PrejittedLambdaDependencies --layer-type runtime-package-store --s3-bucket prejittedlambdadependencies290387498273498 --framework netcoreapp3.1           
+      #- name: Deploy Lambda Layer
+      #  run: |
+      #    cd PrejittedLambda.Dependencies
+      #    dotnet lambda publish-layer PrejittedLambdaDependencies --layer-type runtime-package-store --s3-bucket prejittedlambdadependencies290387498273498 --framework netcoreapp3.1           
       - name: download Layer manifest
         run: |          
           $description = ((aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion.Description) | out-string | convertfrom-json
