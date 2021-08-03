@@ -7,8 +7,7 @@ on:
 jobs:
   pipeline:
     runs-on: windows-latest
-    env:
-      LAYER_KEY: "default"
+    
     steps:      
       - uses: actions/checkout@v2
       - name: Setup .NET 3.x
@@ -43,12 +42,12 @@ jobs:
         run: |
           cd PrejittedLambda.Dependencies
           dotnet lambda publish-layer PrejittedLambdaDependencies --layer-type runtime-package-store --s3-bucket prejittedlambdadependencies290387498273498 --framework netcoreapp3.1          
-      - name: Find and Replace
-        run: |
-          cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
-          $layer = (aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion
-          $key = ($layer.Description | convertfrom-json).Key
-          find *.json -type f -exec sed -i ''s/#{LayerKey}#/$key/g'' {} \;
+      - name: Replace tokens
+        #run: |
+        #  cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
+        #  $layer = (aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion
+        #  $key = ($layer.Description | convertfrom-json).Key
+        run: find *.json -type f -exec sed -i ''s/#{LayerKey}#/"SLOPPY"/g'' {} \;
       - name: Deploy
         run: |
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
