@@ -32,10 +32,10 @@ jobs:
       - name: Build Dependencies
         run: |
           dotnet publish PrejittedLambda.Dependencies/PrejittedLambdaDependencies.csproj --configuration Release            
-      - name: Deploy Dependencies Bucket
-        run: |
-          cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1          
-          cdk deploy Dependencies --require-approval never
+      #- name: Deploy Dependencies Bucket
+      #  run: |
+      #    cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1          
+      #    cdk deploy Dependencies --require-approval never
       - name: Deploy Lambda Layer
         run: |
           cd PrejittedLambda.Dependencies
@@ -49,22 +49,14 @@ jobs:
       - name: Build Main
         run: |
           dotnet publish PrejittedLambda/PrejittedLambda.csproj --configuration Release --manifest artifact.xml
-
-      #- name: Zip
-      #  run: |
-      #    Compress-Archive -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/publish.zip    
-      #    Compress-Archive -Path PrejittedLambda.Dependencies/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/dependencies.zip    
-      #- name: Test with the dotnet CLI
-      #  run: dotnet test
-            
-
-      ##- name: Replace tokens
-      ##  run: |
-      ##    cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
-      ##    $layer = (aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion.LayerVersionArn          
-      ##    ((Get-Content -path appsettings.json -Raw) -replace '#{LayerArn}#',$layer) | Set-Content -path appsettings.json
-      #- name: Deploy
-      #  run: |
-      #    cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
-      #    cdk deploy MainStack --require-approval never
-          
+      - name: Zip Main
+        run: Compress-Archive -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/publish.zip     
+      - name: Replace tokens
+        run: |
+          cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
+          $layer = (aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion.LayerVersionArn          
+          ((Get-Content -path appsettings.json -Raw) -replace '#{LayerArn}#',$layer) | Set-Content -path appsettings.json
+      - name: Deploy
+        run: |
+          cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
+          cdk deploy MainStack --require-approval never
