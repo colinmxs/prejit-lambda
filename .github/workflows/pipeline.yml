@@ -18,6 +18,12 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet publish --no-restore --configuration Release
+      - name: Replace tokens
+        #run: |
+        #  cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
+        #  $layer = (aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion
+        #  $key = ($layer.Description | convertfrom-json).Key
+        run: find *.json -type f -exec sed -i ''s/#{LayerKey}#/"SLOPPY"/g'' {} \;
       - name: Zip
         run: Compress-Archive -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/publish.zip
       - name: Test with the dotnet CLI
@@ -42,12 +48,7 @@ jobs:
         run: |
           cd PrejittedLambda.Dependencies
           dotnet lambda publish-layer PrejittedLambdaDependencies --layer-type runtime-package-store --s3-bucket prejittedlambdadependencies290387498273498 --framework netcoreapp3.1          
-      - name: Replace tokens
-        #run: |
-        #  cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
-        #  $layer = (aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion
-        #  $key = ($layer.Description | convertfrom-json).Key
-        run: find *.json -type f -exec sed -i ''s/#{LayerKey}#/"SLOPPY"/g'' {} \;
+      
       - name: Deploy
         run: |
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
