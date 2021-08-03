@@ -3,7 +3,7 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
-
+  
 jobs:
   pipeline:
     runs-on: windows-latest
@@ -14,27 +14,51 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '3.x'
-      - name: Install dependencies
-        run: dotnet restore
-      - name: Build
-        run: dotnet publish --no-restore --configuration Release
-      - name: Zip
-        run: Compress-Archive -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/publish.zip
-      - name: Test with the dotnet CLI
-        run: dotnet test
-      - name: Install cdk
-        run: |
-          npm install -g aws-cdk
-          npm install -g aws-cli          
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
+      - name: Install cdk
+        run: |
+          npm install -g aws-cdk
+          npm install -g aws-cli   
+          dotnet tool install -g Amazon.Lambda.Tools      
+          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/us-west-2
+      - name: Build CDK
+        run: |
+          dotnet publish PrejittedLambda.Infrastructure/PrejittedLambda.Infrastructure.csproj --configuration Release          
+      - name: Build Dependencies
+        run: |
+          dotnet publish PrejittedLambda.Dependencies/PrejittedLambdaDependencies.csproj --configuration Release            
+      #- name: Deploy Dependencies Bucket
+      #  run: |
+      #    cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1          
+      #    cdk deploy Dependencies --require-approval never
+      #- name: Deploy Lambda Layer
+      #  run: |
+      #    cd PrejittedLambda.Dependencies
+      #    dotnet lambda publish-layer PrejittedLambdaDependencies --layer-type runtime-package-store --s3-bucket prejittedlambdadependencies290387498273498 --framework netcoreapp3.1           
+      - name: download Layer manifest
+        run: |          
+          $description = ((aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion.Description) | out-string | convertfrom-json
+          $bucket = $description.Buc
+          $key = $description.Key
+          aws s3 cp s3://$bucket/$key artifact.xml
+      - name: Build Main
+        run: |
+          dotnet publish PrejittedLambda/PrejittedLambda.csproj --configuration Release --manifest artifact.xml
+      - name: Zip Main
+        run: |
+          Get-ChildItem -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish |
+            Compress-Archive -DestinationPath PrejittedLambda/publish.zip     
+      - name: Replace tokens
+        run: |
+          cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
+          $layer = (aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion.LayerVersionArn          
+          ((Get-Content -path appsettings.json -Raw) -replace '#{LayerArn}#',$layer) | Set-Content -path appsettings.json
       - name: Deploy
         run: |
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/us-west-2
-          cdk deploy * --require-approval never
-          
+          cdk deploy MainStack --require-approval never

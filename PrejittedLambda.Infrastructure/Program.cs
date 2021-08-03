@@ -1,19 +1,34 @@
 ﻿namespace PrejittedLambda.Infrastructure
 {
     using Amazon.CDK;
+    using System.Threading.Tasks;
 
     sealed class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
+            var layerArn = (await Utilities.LoadFromJsonFile("appsettings.json"))["LayerArn"];
+            var storePath = (await Utilities.LoadFromJsonFile("appsettings.json"))["StorePath"];
             var app = new App();
-            _ = new MainStack(app, "PrejittedLambda", new StackProps 
+            var dependenciesStack = new DependenciesStack(app, "Dependencies", new StackProps
             {
                 Env = new Environment
                 {
-                    Account = "685696558467",
+                    Account = app.Account,
                     Region = "us-west-2"
                 }
+            });
+
+            _ = new MainStack(app, "MainStack", new MainStack.MainStackProps
+            {
+                LayerArn = layerArn,
+                StorePath = storePath,
+                Env = new Environment
+                {
+                    Account = app.Account,
+                    Region = "us-west-2"
+                },
+
             });
             app.Synth();
         }        

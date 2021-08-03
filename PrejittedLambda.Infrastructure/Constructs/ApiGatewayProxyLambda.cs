@@ -4,6 +4,7 @@
     using Amazon.CDK.AWS.APIGateway;
     using Amazon.CDK.AWS.IAM;
     using Amazon.CDK.AWS.Lambda;
+    using Amazon.CDK.AWS.S3;
     using System.Collections.Generic;
 
     public class ApiGatewayProxyLambdaProps
@@ -60,7 +61,9 @@
         /// <summary>
         /// The number of provisioned (warm) lambda instances in the production environment
         /// </summary>
-        public int ProvisionedProductionInstances { get; set; } = 0;    
+        public int ProvisionedProductionInstances { get; set; } = 0;
+        public string LayerArn { get; set; }
+        public string StorePath { get; set; }
     }
 
     public class ApiGatewayProxyLambda : Construct
@@ -115,12 +118,17 @@
                 {
                     ProvisionedConcurrentExecutions = props.AspNetEnvironment == "Production" ? props.ProvisionedProductionInstances : 0
                 },
+                Layers = new ILayerVersion[]
+                {
+                    LayerVersion.FromLayerVersionArn(this, "Layer", props.LayerArn)
+                },
                 MemorySize = 256,
                 RetryAttempts = 1,
                 Role = LambdaExecutionRole,
                 Environment = new Dictionary<string, string>
                 {
-                    {"ASPNETCORE_ENVIRONMENT", props.AspNetEnvironment}
+                    { "ASPNETCORE_ENVIRONMENT", props.AspNetEnvironment },
+                    { "DOTNET_SHARED_STORE", props.StorePath }
                 }
             });
             Tags.Of(LambdaFunction).Add("Name", props.LambdaFunctionName);

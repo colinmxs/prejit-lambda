@@ -6,7 +6,13 @@
 
     public class MainStack : Stack
     {
-        public MainStack(Construct scope, string id, IStackProps props) : base(scope, id, props)
+        public class MainStackProps : StackProps
+        {
+            public string LayerArn { get; internal set; }
+            public string StorePath { get; internal set; }
+        }
+
+        public MainStack(Construct scope, string id, MainStackProps props) : base(scope, id, props)
         {
             var apiGatewayProxyLambdaProps = new ApiGatewayProxyLambdaProps
             {
@@ -16,6 +22,7 @@
                 LambdaFunctionHandler = "PrejittedLambda::PrejittedLambda.LambdaEntryPoint::FunctionHandlerAsync",
                 LambdaFunctionName = "PrejittedLambdaFunction",
                 LambdFunctionAssetCodePath = $"{Utilities.GetDirectory("PrejittedLambda")}\\publish.zip",
+                StorePath = props.StorePath,
                 RestApiName = $"PrejittedLambda",
                 AspNetEnvironment = "Production",
                 CorsOptions = new CorsOptions
@@ -24,7 +31,8 @@
                     /// TODO: #2 Set up CORS!
                     AllowOrigins = new string[] { "" },
                     AllowMethods = Cors.ALL_METHODS
-                }
+                },
+                LayerArn = props.LayerArn
             };
 
             var apiGatewayProxyLambda = new ApiGatewayProxyLambda(this, apiGatewayProxyLambdaProps.ConstructIdPrefix, apiGatewayProxyLambdaProps);
