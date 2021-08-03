@@ -47,6 +47,7 @@ jobs:
         run: |
           $layer = (aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion
           $key = ($layer.Description | convertfrom-json).Key
+          Write-Host $key
           echo "LAYER_KEY=$key" >> $GITHUB_ENV
       - name: Find and Replace
         run: |
