@@ -17,9 +17,13 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
       - name: Build
-        run: dotnet publish --no-restore --configuration Release  
+        run: |
+          #dotnet store --manifest PrejittedLambda.Dependencies/PrejittedLambdaDependencies.csproj --framework-version 3.1.0 --runtime
+          dotnet publish --no-restore --configuration Release  
       - name: Zip
-        run: Compress-Archive -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/publish.zip    
+        run: |
+          Compress-Archive -Path PrejittedLambda/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/publish.zip    
+          Compress-Archive -Path PrejittedLambda.Dependencies/bin/Release/netcoreapp3.1/publish -DestinationPath PrejittedLambda/dependencies.zip    
       - name: Test with the dotnet CLI
         run: dotnet test
       - name: Configure AWS Credentials
@@ -34,19 +38,19 @@ jobs:
           npm install -g aws-cli   
           dotnet tool install -g Amazon.Lambda.Tools      
           cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/us-west-2      
-      - name: Deploy Dependencies Bucket
-        run: |
-          cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1          
-          cdk deploy Dependencies --require-approval never
-      - name: Deploy Lambda Layer
-        run: |
-          cd PrejittedLambda.Dependencies
-          dotnet lambda publish-layer PrejittedLambdaDependencies --layer-type runtime-package-store --s3-bucket prejittedlambdadependencies290387498273498 --framework netcoreapp3.1          
-      - name: Replace tokens
-        run: |
-          cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
-          $layer = (aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion.LayerVersionArn          
-          ((Get-Content -path appsettings.json -Raw) -replace '#{LayerArn}#',$layer) | Set-Content -path appsettings.json
+      #- name: Deploy Dependencies Bucket
+      #  run: |
+      #    cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1          
+      #    cdk deploy Dependencies --require-approval never
+      #- name: Deploy Lambda Layer
+      #  run: |
+      #    cd PrejittedLambda.Dependencies
+      #    dotnet lambda publish-layer PrejittedLambdaDependencies --layer-type runtime-package-store --s3-bucket prejittedlambdadependencies290387498273498 --framework netcoreapp3.1          
+      #- name: Replace tokens
+      #  run: |
+      #    cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
+      #    $layer = (aws lambda list-layers | out-string | convertfrom-json).Layers[0].LatestMatchingVersion.LayerVersionArn          
+      #    ((Get-Content -path appsettings.json -Raw) -replace '#{LayerArn}#',$layer) | Set-Content -path appsettings.json
       - name: Deploy
         run: |
           cd PrejittedLambda.Infrastructure/bin/Release/netcoreapp3.1
