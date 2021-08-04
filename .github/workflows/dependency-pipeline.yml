@@ -28,11 +28,5 @@ jobs:
           dotnet tool install -g Amazon.Lambda.Tools                
       - name: Deploy Lambda Layer
         run: |
-          BUCKET_EXISTS=$(aws s3api head-bucket --bucket prejittedlambdadependencies290387498273498 2>&1 || true)
-          if [ -z "$BUCKET_EXISTS" ]; then
-            echo "Bucket exists"
-          else
-            aws s3api create-bucket --bucket prejittedlambdadependencies290387498273498 --region us-west-2
-          fi
           cd PrejittedLambda.Dependencies
           dotnet lambda publish-layer PrejittedLambdaDependencies --layer-type runtime-package-store --s3-bucket prejittedlambdadependencies290387498273498 --framework netcoreapp3.1
