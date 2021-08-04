@@ -2,8 +2,8 @@ name: Build/Deploy Dependencies
 on:
   push:
     branches: [ main ]
-    #paths:
-    #  - '**/PrejittedLambda.Dependencies/*'
+    paths:
+      - '**/PrejittedLambda.Dependencies/*'
   workflow_dispatch:
   
 jobs:
