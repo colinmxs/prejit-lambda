@@ -1,9 +1,9 @@
 name: Build/Deploy Dependencies
 on:
   push:
-    branches: [ dependency-pipeline ]
-    paths:
-      - '**/PrejittedLambda.Dependencies/*'
+    branches: [ main ]
+    #paths:
+    #  - '**/PrejittedLambda.Dependencies/*'
   workflow_dispatch:
   
 jobs:
@@ -25,8 +25,7 @@ jobs:
       - name: Install tools
         run: |
           npm install -g aws-cli   
-          dotnet tool install -g Amazon.Lambda.Tools      
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/us-west-2                              
+          dotnet tool install -g Amazon.Lambda.Tools                
       - name: Deploy Lambda Layer
         run: |
           BUCKET_EXISTS=$(aws s3api head-bucket --bucket prejittedlambdadependencies290387498273498 2>&1 || true)
