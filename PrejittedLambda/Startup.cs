@@ -74,7 +74,7 @@
                 opts.TokenValidationParameters = validationParameters;
                 opts.RequireHttpsMetadata = false;
             });
-            services.AddMediatR(GetType().Assembly);
+            //services.AddMediatR(GetType().Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
