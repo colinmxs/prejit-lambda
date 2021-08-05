@@ -9,19 +9,28 @@
     [ApiController]
     public class HealthCheckController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        //private readonly IMediator _mediator;
 
-        public HealthCheckController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        //public HealthCheckController(IMediator mediator)
+        //{
+        //    _mediator = mediator;
+        //}
 
         [HttpGet]
         [Route("")]
         [AllowAnonymous]
         public async Task<DoHealthCheck.Result> DoHealthCheck()
         {
-            return await _mediator.Send(new DoHealthCheck.Query());
+            return new DoHealthCheck.Result
+            {
+                CurrentTime = System.DateTime.Now,
+                Status = new DoHealthCheck.Model
+                {
+                    IsHealthy = true,
+                    Reason = "200"
+                }
+            };
+            //return await _mediator.Send(new DoHealthCheck.Query());
         }
     }
 }

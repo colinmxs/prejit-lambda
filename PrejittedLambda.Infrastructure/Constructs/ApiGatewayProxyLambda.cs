@@ -120,7 +120,7 @@
                 },
                 Layers = new ILayerVersion[]
                 {
-                    LayerVersion.FromLayerVersionArn(this, "Layer", props.LayerArn)
+                    LayerVersion.FromLayerVersionArn(this, "Layer", "arn:aws:lambda:us-west-2:685696558467:layer:Prejit:4")
                 },
                 MemorySize = 256,
                 RetryAttempts = 1,

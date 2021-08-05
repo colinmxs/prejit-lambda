@@ -49,31 +49,32 @@
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
 
-            var validationParameters = new TokenValidationParameters
-            {
-                ValidateAudience = false,
-                ValidateIssuer = false,
-                ValidateLifetime = true,
-                IssuerSigningKeyResolver = new IssuerSigningKeyResolver((token, securityToken, kid, validationParameters) =>
-                {
-                    var keys = new List<RsaSecurityKey>();
-                    foreach (var key in AppSettings.JwtValidationKeys)
-                    {
-                        var rsa = RSA.Create();
-                        rsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(key), out _);
-                        keys.Add(new RsaSecurityKey(rsa));
-                    }
+            //var validationParameters = new TokenValidationParameters
+            //{
+            //    ValidateAudience = false,
+            //    ValidateIssuer = false,
+            //    ValidateLifetime = true,
+            //    IssuerSigningKeyResolver = new IssuerSigningKeyResolver((token, securityToken, kid, validationParameters) =>
+            //    {
+            //        var keys = new List<RsaSecurityKey>();
+            //        foreach (var key in AppSettings.JwtValidationKeys)
+            //        {
+            //            var rsa = RSA.Create();
+            //            rsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(key), out _);
+            //            keys.Add(new RsaSecurityKey(rsa));
+            //        }
 
-                    return keys;
-                })
-            };            
+            //        return keys;
+            //    })
+            //};            
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
-            {
-                opts.TokenValidationParameters = validationParameters;
-                opts.RequireHttpsMetadata = false;
-            });
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
+            //{
+            //    opts.TokenValidationParameters = validationParameters;
+            //    opts.RequireHttpsMetadata = false;
+            //});
+            //services.AddMediatR()
             //services.AddMediatR(GetType().Assembly);
         }
 
