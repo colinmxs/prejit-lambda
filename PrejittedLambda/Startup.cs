@@ -42,8 +42,8 @@
             services.AddControllers(config =>
             {
                 var policy = new AuthorizationPolicyBuilder()
-                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                .RequireAuthenticatedUser()
+                //.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                //.RequireAuthenticatedUser()
                 .Build();
 
                 config.Filters.Add(new AuthorizeFilter(policy));
@@ -108,9 +108,8 @@
 
             app.UseRouting();
 
-            app.UseAuthentication();
-
-            app.UseAuthorization();
+            //app.UseAuthentication();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
